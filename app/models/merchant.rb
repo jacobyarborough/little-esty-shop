@@ -3,11 +3,10 @@ class Merchant < ApplicationRecord
   has_many :invoice_items, through: :items
   has_many :invoices, through: :invoice_items
   has_many :customers, through: :invoices
+  has_many :bulk_discounts
 
   validates_presence_of :name
   validates_presence_of :status
-
-  #class method on transactions where transactions.result = success (merge?)
 
   def favorite_customers
     customers.joins(invoices: :transactions)

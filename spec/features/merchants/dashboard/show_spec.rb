@@ -34,6 +34,9 @@ RSpec.describe "merchant dashboard" do
     @inv_item5 = create :invoice_item, { item_id: @item.id, invoice_id: @invoice5.id}
     @inv_item6 = create :invoice_item, { item_id: @item.id, invoice_id: @invoice6.id}
 
+    @discount1 = @merchant.discounts.create!(discount: 0.10, threshold: 10)
+    @discount2 = @merchant.discounts.create!(discount: 0.15, threshold: 15)
+
     visit merchant_dashboard_path(@merchant)
   end
 
@@ -76,6 +79,11 @@ RSpec.describe "merchant dashboard" do
   it 'the items ready to ship list is sorted from oldest to newest' do
     expect("(Invoice #{@invoice4.id})").to appear_before("(Invoice #{@invoice3.id})")
     expect("(Invoice #{@invoice2.id})").to appear_before("(Invoice #{@invoice1.id})")
-
   end
+
+  it 'shas a link to view merchant discounts' do 
+    click_on "View Merchant's Discounts"
+
+    expect(current_path).to eq(merchant_discounts_path(@merchant))
+  end 
 end

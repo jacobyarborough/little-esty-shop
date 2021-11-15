@@ -3,6 +3,7 @@ class Merchant < ApplicationRecord
   has_many :invoice_items, through: :items
   has_many :invoices, through: :invoice_items
   has_many :customers, through: :invoices
+  has_many :discounts, dependent: :destroy
 
   validates_presence_of :name
   validates_presence_of :status

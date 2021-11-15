@@ -1,0 +1,9 @@
+<h1>Discounts</h1>
+<div>
+<% @discounts.each do |discount| %>
+  Discount Number: <%= link_to(discount.id, merchant_discount_path(discount.merchant.id, discount.id)) %><br>
+  Item Count Minimum: <%= discount.threshold %><br>
+  Percent Discount: <%= (discount.discount * 100.0).round(2) %>%<br>
+  <br>
+<% end %>
+</div>

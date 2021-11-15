@@ -1,1 +1,3 @@
 <h1>Discount Number <%= @discount.id %> Info:</h1>
+  Item Count Minimum: <%= @discount.threshold %><br>
+  Percent Discount: <%= (@discount.discount * 100.0).round(2) %>%<br>

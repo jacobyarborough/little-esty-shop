@@ -76,11 +76,6 @@ RSpec.describe "merchant dashboard" do
   it 'the items ready to ship list is sorted from oldest to newest' do
     expect("(Invoice #{@invoice4.id})").to appear_before("(Invoice #{@invoice3.id})")
     expect("(Invoice #{@invoice2.id})").to appear_before("(Invoice #{@invoice1.id})")
-  end
 
-  it 'i see a link to view all my discounts' do
-    click_link 'My Discounts'
-
-    expect(current_path).to eq(merchant_bulk_discounts_path(@merchant))
   end
 end

@@ -74,7 +74,7 @@ RSpec.describe Invoice, type: :model do
       end
     end
 
-    describe '#discount_revenue' do 
+    describe '#discounted_revenue' do 
       it 'returns the total discounted revenue for a specific merchant invoice' do 
         merchant1 = create(:merchant)
         item1 = create :item, { merchant_id: merchant1.id }

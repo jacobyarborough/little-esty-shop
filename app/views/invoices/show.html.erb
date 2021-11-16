@@ -10,8 +10,8 @@ Customer: <%= @invoice.customer.full_name %><br>
     <% if item.merchant == @merchant %>
       Item name: <%= item.name %><br>
       Applied Discount:
-      <% if @invoice.item_discounts(@merchant.id)["#{item.id}"] %>
-        <%= link_to("View Discount", merchant_discount_path(@merchant.id, @invoice.item_discounts(@merchant.id)["#{item.id}"])) %>
+      <% if @invoice.item_discounts["#{item.id}"] %>
+        <%= link_to("View Discount", merchant_discount_path(@merchant.id, @invoice.item_discounts["#{item.id}"])) %>
       <% end %><br>
         <% item.invoice_items.each do |inv_item| %>
           Quantity sold: <%= inv_item.quantity %><br>

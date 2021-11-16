@@ -3,16 +3,15 @@ require 'rails_helper'
 RSpec.describe "admin invoice show" do
   before do
     @merchant = create(:merchant)
-
+    @merchant2 = create(:merchant)
     @customer3 = create :customer
-
     @item7 = create :item, { merchant_id: @merchant.id }
-    @item8 = create :item, { merchant_id: @merchant.id }
-
+    @item8 = create :item, { merchant_id: @merchant2.id }
     @invoice8 = create :invoice, { customer_id: @customer3.id, created_at: DateTime.new(2021, 1, 5) }
-
-    @inv_item11 = create :invoice_item, { item_id: @item7.id, invoice_id: @invoice8.id, unit_price: 10000, quantity: 4, status: "pending" }
+    @inv_item11 = create :invoice_item, { item_id: @item7.id, invoice_id: @invoice8.id, unit_price: 10000, quantity: 10, status: "pending" }
     @inv_item12 = create :invoice_item, { item_id: @item8.id, invoice_id: @invoice8.id, unit_price: 3000, quantity: 6, status: "shipped"}
+    @discount1 = @merchant.discounts.create!(discount: 0.10, threshold: 10)
+    @discount2 = @merchant2.discounts.create!(discount: 0.15, threshold: 15)
 
     visit admin_invoice_path(@invoice8.id)
   end
@@ -50,4 +49,8 @@ RSpec.describe "admin invoice show" do
       expect(find_field(:invoice_item_status).value).to eq("shipped")
     end
   end
+
+  it 'shows the discounted total revenue' do 
+    expect(page).to have_content("Discounted total revenue: $1,080.00") 
+  end 
 end

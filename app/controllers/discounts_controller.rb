@@ -3,9 +3,6 @@ class DiscountsController < ApplicationController
     if params[:merchant_id]
       @discounts = Discount.where(merchant_id: params[:merchant_id])
       @holiday_facade = HolidayFacade.new
-    else 
-      @discounts = Discount.all
-      @holiday_facade = HolidayFacade.new
     end 
   end 
 

@@ -15,9 +15,13 @@ RSpec.describe 'merchant invoice show page' do
 
     @transaction = create :transaction, { invoice_id: @invoice.id, result: 'success' }
 
-    @inv_item1 = create :invoice_item, { item_id: @item1.id, invoice_id: @invoice.id, status: 'pending' }
-    @inv_item2 = create :invoice_item, { item_id: @item2.id, invoice_id: @invoice.id}
-    @inv_item3 = create :invoice_item, { item_id: @item3.id, invoice_id: @invoice.id}
+    @inv_item1 = create :invoice_item, { quantity: 11, unit_price: 1000, item_id: @item1.id, invoice_id: @invoice.id, status: 'pending' }
+    @inv_item2 = create :invoice_item, { quantity: 16, unit_price: 1500, item_id: @item2.id, invoice_id: @invoice.id}
+    @inv_item3 = create :invoice_item, { quantity: 15, unit_price: 2000, item_id: @item3.id, invoice_id: @invoice.id}
+
+    @discount1 = @merchant1.discounts.create!(discount: 0.10, threshold: 10)
+    @discount2 = @merchant1.discounts.create!(discount: 0.15, threshold: 15)
+    @discount3 = @merchant2.discounts.create!(discount: 0.10, threshold: 10)
 
     visit merchant_invoice_path(@merchant1, @invoice)
   end
@@ -57,4 +61,8 @@ RSpec.describe 'merchant invoice show page' do
       expect(find_field(:invoice_item_status).value).to eq('packaged')
     end
   end
+
+  it 'shows the total discounted revenue' do 
+    expect(page).to have_content("Total Discounted Revenue: $303.00")
+  end 
 end

@@ -92,5 +92,29 @@ RSpec.describe Invoice, type: :model do
         expect(invoice.discounted_revenue(merchant1.id)).to eq(40300)
       end 
     end 
+
+    describe '#item_discounts' do 
+      it 'returns items and associated discounts if any' do 
+        merchant1 = create(:merchant)
+        item1 = create :item, { merchant_id: merchant1.id }
+        item2 = create :item, { merchant_id: merchant1.id }
+        item3 = create :item, { merchant_id: merchant1.id }
+        customer = create :customer
+        invoice = create :invoice, { customer_id: customer.id }
+        transaction = create :transaction, { invoice_id: invoice.id, result: 'success' }
+        inv_item1 = create :invoice_item, { quantity: 11, unit_price: 1000, item_id: item1.id, invoice_id: invoice.id }
+        inv_item2 = create :invoice_item, { quantity: 16, unit_price: 1500, item_id: item2.id, invoice_id: invoice.id }
+        inv_item3 = create :invoice_item, { quantity: 5, unit_price: 2000, item_id: item3.id, invoice_id: invoice.id }
+        discount1 = merchant1.discounts.create!(discount: 0.10, threshold: 10)
+        discount2 = merchant1.discounts.create!(discount: 0.15, threshold: 15)
+
+        expected = {
+          "#{item1.id}" => discount1.id,
+          "#{item2.id}" => discount2.id,
+        }
+
+        expect(invoice.item_discounts(merchant1.id)).to eq(expected)
+      end 
+    end 
   end
 end

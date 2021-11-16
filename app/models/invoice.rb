@@ -43,4 +43,19 @@ class Invoice < ApplicationRecord
     end 
     total_amount
   end 
+
+  def item_discounts(merchant_id)
+    discount_hash = {}
+    line_items = items.joins('inner join invoice_items ii on ii.item_id = items.id left join discounts d on d.merchant_id = items.merchant_id and ii.quantity >= d.threshold')
+                      .select('items.*, ii.*, d.*, d.id as discount_id, RANK() OVER (PARTITION BY items.id ORDER BY d.threshold DESC) AS rank')#.having('rank = 1') -- why wont this work?
+                      .where(merchant_id: merchant_id)
+    line_items.each do |line|
+      if line.rank == 1
+        if line.discount != nil
+          discount_hash["#{line.item_id}"] = line.discount_id
+        end 
+      end 
+    end 
+    discount_hash
+  end 
 end

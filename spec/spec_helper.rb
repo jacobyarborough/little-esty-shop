@@ -12,8 +12,8 @@
 # the additional setup, and require it from the spec files that actually need
 # it.
 
-require 'webmock/rspec'
-WebMock.disable_net_connect!(allow_localhost: true)
+# require 'webmock/rspec'
+# WebMock.disable_net_connect!(allow_localhost: true)
 
 require 'simplecov'
 SimpleCov.start do

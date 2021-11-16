@@ -21,7 +21,7 @@ RSpec.describe 'merchant invoice show page' do
 
     @discount1 = @merchant1.discounts.create!(discount: 0.10, threshold: 10)
     @discount2 = @merchant1.discounts.create!(discount: 0.15, threshold: 15)
-    @discount3 = @merchant2.discounts.create!(discount: 0.10, threshold: 10)
+    @discount3 = @merchant2.discounts.create!(discount: 0.10, threshold: 20)
 
     visit merchant_invoice_path(@merchant1, @invoice)
   end
@@ -64,5 +64,27 @@ RSpec.describe 'merchant invoice show page' do
 
   it 'shows the total discounted revenue' do 
     expect(page).to have_content("Total Discounted Revenue: $303.00")
+  end 
+
+  it 'has a link to view discount associated with an item if applicable' do 
+    within("#item-#{@item1.id}") do 
+      click_link "View Discount"
+
+      expect(current_path).to eq(merchant_discount_path(@merchant1, @discount1))
+    end 
+
+    visit merchant_invoice_path(@merchant1, @invoice)
+
+    within("#item-#{@item2.id}") do 
+      click_link "View Discount"
+
+      expect(current_path).to eq(merchant_discount_path(@merchant1, @discount2))
+    end 
+
+    visit merchant_invoice_path(@merchant2, @invoice)
+
+    within("#item-#{@item3.id}") do 
+      expect(page).not_to have_content("View Discount")
+    end 
   end 
 end

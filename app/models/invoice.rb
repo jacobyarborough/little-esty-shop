@@ -26,4 +26,21 @@ class Invoice < ApplicationRecord
                  .where(invoice_items: {invoice_id: invoice_id})
                  .sum("invoice_items.unit_price * invoice_items.quantity")
   end
+
+  def discounted_revenue(merchant_id)
+    total_amount = 0
+    line_items = items.joins('inner join invoice_items ii on ii.item_id = items.id left join discounts d on d.merchant_id = items.merchant_id and ii.quantity >= d.threshold')
+                      .select('items.*, ii.*, d.*, RANK() OVER (PARTITION BY items.id ORDER BY d.threshold DESC) AS rank')#.having('rank = 1') -- why wont this work?
+                      .where(merchant_id: merchant_id)
+    line_items.each do |line|
+      if line.rank == 1
+        if line.discount != nil
+          total_amount += ((line.quantity * line.unit_price) * (1 - line.discount))
+        else 
+          total_amount += (line.quantity * line.unit_price)
+        end 
+      end 
+    end 
+    total_amount
+  end 
 end
